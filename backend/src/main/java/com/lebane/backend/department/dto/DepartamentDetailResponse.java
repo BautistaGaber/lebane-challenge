@@ -2,8 +2,12 @@ package com.lebane.backend.department.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.lebane.backend.department.entity.CurrencyCode;
+import com.lebane.backend.image.dto.ImageResponse;
+import com.lebane.backend.inquiry.dto.InquiryResponse;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 public record DepartamentDetailResponse (
 
