@@ -4,6 +4,17 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### ENVIRONMENT VARIABLES ###
+.env
+.env.*
+!.env.example
+
+### REACT / NODE ###
+**/node_modules/
+**/dist/
+**/coverage/
+*.tsbuildinfo
+
 ### STS ###
 .apt_generated
 .classpath
