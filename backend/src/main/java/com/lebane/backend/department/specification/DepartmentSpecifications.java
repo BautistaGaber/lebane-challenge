@@ -16,10 +16,7 @@ public final class DepartmentSpecifications {
                 return criteriaBuilder.conjunction();
             }
 
-            return criteriaBuilder.equal(
-                    root.get("available"),
-                    available
-            );
+            return criteriaBuilder.equal(root.get("available"), available);
         };
     }
 
@@ -29,10 +26,7 @@ public final class DepartmentSpecifications {
                 return criteriaBuilder.conjunction();
             }
 
-            return criteriaBuilder.greaterThanOrEqualTo(
-                    root.get("price"),
-                    minPrice
-            );
+            return criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice);
         };
     }
 
@@ -42,10 +36,7 @@ public final class DepartmentSpecifications {
                 return criteriaBuilder.conjunction();
             }
 
-            return criteriaBuilder.lessThanOrEqualTo(
-                    root.get("price"),
-                    maxPrice
-            );
+            return criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice);
         };
     }
 
@@ -57,10 +48,7 @@ public final class DepartmentSpecifications {
                 return criteriaBuilder.conjunction();
             }
 
-            return criteriaBuilder.greaterThanOrEqualTo(
-                    root.get("squareMeters"),
-                    minSquareMeters
-            );
+            return criteriaBuilder.greaterThanOrEqualTo(root.get("squareMeters"), minSquareMeters);
         };
     }
 
@@ -72,10 +60,7 @@ public final class DepartmentSpecifications {
                 return criteriaBuilder.conjunction();
             }
 
-            return criteriaBuilder.lessThanOrEqualTo(
-                    root.get("squareMeters"),
-                    maxSquareMeters
-            );
+            return criteriaBuilder.lessThanOrEqualTo(root.get("squareMeters"), maxSquareMeters);
         };
     }
 }

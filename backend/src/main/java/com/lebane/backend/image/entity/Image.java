@@ -53,4 +53,8 @@ public class Image {
     public void removeFromDepartment() {
         this.department = null;
     }
+
+    public static Image create() {
+        return new Image();
+    }
 }

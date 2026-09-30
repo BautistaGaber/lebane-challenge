@@ -154,4 +154,13 @@ public class GlobalExceptionHandler {
                 request,
                 List.of());
     }
+
+    @ExceptionHandler(ResourceConflictException.class)
+    public ResponseEntity<ApiErrorResponse> handleResourceConflict(ResourceConflictException exception, HttpServletRequest request) {
+        return buildResponse(
+                HttpStatus.CONFLICT,
+                exception.getMessage(),
+                request,
+                List.of());
+    }
 }
