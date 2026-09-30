@@ -106,4 +106,8 @@ public class Department {
         inquiries.add(inquiry);
         inquiry.assignTo(this);
     }
+
+    public static Department create() {
+        return new Department();
+    }
 }

@@ -5,7 +5,7 @@ import com.lebane.backend.department.entity.CurrencyCode;
 
 import java.math.BigDecimal;
 
-public record DepartamentResponse (
+public record DepartmentResponse(
 
         Long id,
 

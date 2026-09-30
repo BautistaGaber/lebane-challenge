@@ -145,4 +145,13 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(response);
     }
+
+    @ExceptionHandler(InvalidFileException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidFile(InvalidFileException exception, HttpServletRequest request) {
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                exception.getMessage(),
+                request,
+                List.of());
+    }
 }
