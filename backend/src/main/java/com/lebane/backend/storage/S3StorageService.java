@@ -62,6 +62,27 @@ public class S3StorageService implements StorageService{
     }
 
     @Override
+    public StoredObject upload(byte[] content, String contentType, String objectKey) {
+        if(content == null || content.length == 0){
+            throw new InvalidFileException("Image content cannot be empty");
+        }
+        PutObjectRequest request = PutObjectRequest.builder()
+                .bucket(properties.bucket())
+                .key(objectKey)
+                .contentType(contentType)
+                .build();
+
+        try {
+            s3Client.putObject(request,RequestBody.fromBytes(content));
+
+            return new StoredObject(objectKey,contentType);
+
+        } catch (RuntimeException exception) {
+            throw new StorageException("Could not upload image to storage",exception);
+        }
+    }
+
+    @Override
     public void delete(String objectKey) {
         DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(properties.bucket()).key(objectKey).build();
         try {

@@ -41,3 +41,8 @@ storage:
         bucket: ${S3_BUCKET:lebane-images}
         access-key: ${S3_ACCESS_KEY:test}
         secret-key: ${S3_SECRET_KEY:test}
+
+app:
+    seed:
+        enabled: ${SEED_ENABLED:true}
+        department-count: 500

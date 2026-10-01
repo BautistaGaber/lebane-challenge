@@ -46,4 +46,8 @@ public class Inquiry {
     public void assignTo(Department department) {
         this.department = department;
     }
+
+    public static Inquiry create(){
+        return new Inquiry();
+    }
 }
