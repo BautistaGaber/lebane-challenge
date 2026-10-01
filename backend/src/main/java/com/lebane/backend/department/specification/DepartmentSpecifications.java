@@ -1,6 +1,7 @@
 package com.lebane.backend.department.specification;
 
 import com.lebane.backend.department.entity.Department;
+import com.lebane.backend.department.entity.Department_;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
@@ -16,7 +17,7 @@ public final class DepartmentSpecifications {
                 return criteriaBuilder.conjunction();
             }
 
-            return criteriaBuilder.equal(root.get("available"), available);
+            return criteriaBuilder.equal(root.get(Department_.available), available);
         };
     }
 
@@ -26,7 +27,7 @@ public final class DepartmentSpecifications {
                 return criteriaBuilder.conjunction();
             }
 
-            return criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice);
+            return criteriaBuilder.greaterThanOrEqualTo(root.get(Department_.price), minPrice);
         };
     }
 
@@ -36,7 +37,7 @@ public final class DepartmentSpecifications {
                 return criteriaBuilder.conjunction();
             }
 
-            return criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice);
+            return criteriaBuilder.lessThanOrEqualTo(root.get(Department_.price), maxPrice);
         };
     }
 
@@ -48,7 +49,7 @@ public final class DepartmentSpecifications {
                 return criteriaBuilder.conjunction();
             }
 
-            return criteriaBuilder.greaterThanOrEqualTo(root.get("squareMeters"), minSquareMeters);
+            return criteriaBuilder.greaterThanOrEqualTo(root.get(Department_.squareMeters), minSquareMeters);
         };
     }
 
@@ -60,7 +61,7 @@ public final class DepartmentSpecifications {
                 return criteriaBuilder.conjunction();
             }
 
-            return criteriaBuilder.lessThanOrEqualTo(root.get("squareMeters"), maxSquareMeters);
+            return criteriaBuilder.lessThanOrEqualTo(root.get(Department_.squareMeters), maxSquareMeters);
         };
     }
 }

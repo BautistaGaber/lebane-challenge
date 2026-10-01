@@ -1,9 +1,12 @@
 package com.lebane.backend.department.repository;
 
+import com.lebane.backend.department.entity.Department_;
 import com.lebane.backend.department.repository.projection.DepartmentImageStats;
 import com.lebane.backend.department.repository.projection.DepartmentInquiryStats;
 import com.lebane.backend.image.entity.Image;
+import com.lebane.backend.image.entity.Image_;
 import com.lebane.backend.inquiry.entity.Inquiry;
+import com.lebane.backend.inquiry.entity.Inquiry_;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -36,10 +39,10 @@ public class DepartmentListQueryRepository {
 
         Root<Image> image = query.from(Image.class);
 
-        Expression<Long> departmentId = image.get("department").get("id");
+        Expression<Long> departmentId = image.get(Image_.department).get(Department_.id);
 
         Expression<String> primaryImageKey = cb.<String>selectCase()
-                        .when(cb.isTrue(image.get("primaryImage")), image.get("objectKey"))
+                        .when(cb.isTrue(image.get(Image_.primaryImage)), image.get(Image_.objectKey))
                         .otherwise(cb.nullLiteral(String.class));
 
         query.multiselect(departmentId.alias("departmentId"), cb.count(image).alias("imageCount"), cb.greatest(primaryImageKey)
@@ -71,7 +74,7 @@ public class DepartmentListQueryRepository {
 
         Root<Inquiry> inquiry = query.from(Inquiry.class);
 
-        Expression<Long> departmentId = inquiry.get("department").get("id");
+        Expression<Long> departmentId = inquiry.get(Inquiry_.department).get(Department_.id);
 
         query.multiselect(departmentId.alias("departmentId"), cb.count(inquiry).alias("inquiryCount"));
 
