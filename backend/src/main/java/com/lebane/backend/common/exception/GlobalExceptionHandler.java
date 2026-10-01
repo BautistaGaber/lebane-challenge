@@ -13,6 +13,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -87,6 +88,26 @@ public class GlobalExceptionHandler {
                 "Malformed request body or unsupported value",
                 request,
                 List.of()
+        );
+    }
+
+    /**
+     * Query params and path variables that cannot be converted to their target type are a client
+     * mistake, not an internal failure. Without this handler they fall through to the catch-all
+     * and are reported as 500.
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException exception, HttpServletRequest request) {
+
+        List<FieldValidationError> validationErrors = List.of(
+                new FieldValidationError(exception.getName(), "Value '" + exception.getValue() + "' is not valid for this parameter")
+        );
+
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                "Request validation failed",
+                request,
+                validationErrors
         );
     }
 

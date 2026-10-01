@@ -19,6 +19,7 @@ import com.lebane.backend.image.entity.Image;
 import com.lebane.backend.image.mapper.ImageMapper;
 import com.lebane.backend.inquiry.dto.InquiryResponse;
 import com.lebane.backend.inquiry.mapper.InquiryMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class DepartmentService {
 
@@ -78,11 +81,11 @@ public class DepartmentService {
 
                 String objectKey = buildObjectKey(savedDepartment.getId(), file);
 
-                StoredObject storedObject = storageService.upload(file, objectKey);
+                uploadedObjectKeys.add(objectKey);
 
-                uploadedObjectKeys.add(storedObject.objectKey());
+                StoredObject storedObject = storageService.upload(file,objectKey);
 
-                Image image = buildImage(storedObject, index);
+                Image image = buildImage(storedObject,index);
 
                 savedDepartment.addImage(image);
             }
@@ -117,6 +120,10 @@ public class DepartmentService {
         validateVersion(department, request.version());
 
         departmentMapper.updateEntity(department, request);
+
+        // The @Version increment happens on flush. Without it the response would carry the previous
+        // version and a client replaying it would bypass optimistic locking.
+        departmentRepository.flush();
 
         return departmentMapper.toResponse(department);
     }
@@ -224,6 +231,11 @@ public class DepartmentService {
 
     private void validateFilters(DepartmentFilter filter) {
 
+        validateNonNegative(filter.minPrice(),"Minimum price cannot be negative");
+        validateNonNegative(filter.maxPrice(),"Maximum price cannot be negative");
+        validateNonNegative(filter.minSquareMeters(),"Minimum square meters cannot be negative");
+        validateNonNegative(filter.maxSquareMeters(),"Maximum square meters cannot be negative");
+
         if (filter.minPrice() != null && filter.maxPrice() != null && filter.minPrice().compareTo(filter.maxPrice()) > 0) {
 
             throw new BusinessRuleException("Minimum price cannot be greater than maximum price");
@@ -267,6 +279,13 @@ public class DepartmentService {
         if (size > MAX_PAGE_SIZE) {
             throw new BusinessRuleException("Page size cannot exceed "+ MAX_PAGE_SIZE
             );
+        }
+    }
+
+    private void validateNonNegative(BigDecimal value,String message) {
+
+        if (value != null && value.compareTo(BigDecimal.ZERO) < 0) {
+            throw new BusinessRuleException(message);
         }
     }
 }
