@@ -1,4 +1,3 @@
-
 name: lebane
 
 services:
@@ -34,6 +33,38 @@ services:
     volumes:
       - localstack_data:/var/lib/localstack
       - ./infra/localstack/init:/etc/localstack/init/ready.d:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -f http://localhost:4566/_localstack/health || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+
+      S3_ENDPOINT: http://localstack:4566
+      S3_REGION: us-east-1
+      S3_BUCKET: ${S3_BUCKET:-lebane-images}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-test}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-test}
+
+      SEED_ENABLED: ${SEED_ENABLED:-true}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
 
 volumes:
   postgres_data:
