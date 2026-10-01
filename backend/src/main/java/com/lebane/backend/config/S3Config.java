@@ -1,6 +1,6 @@
 package com.lebane.backend.config;
 
-import com.lebane.backend.department.storage.StorageProperties;
+import com.lebane.backend.storage.StorageProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

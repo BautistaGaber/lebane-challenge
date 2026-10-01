@@ -1,7 +1,8 @@
-package com.lebane.backend.department.storage;
+package com.lebane.backend.storage;
 
 import com.lebane.backend.common.exception.InvalidFileException;
 import com.lebane.backend.common.exception.StorageException;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Set;
 
+@Service
 public class S3StorageService implements StorageService{
 
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;

@@ -1,4 +1,4 @@
-package com.lebane.backend.department.storage;
+package com.lebane.backend.storage;
 
 import org.springframework.web.multipart.MultipartFile;
 

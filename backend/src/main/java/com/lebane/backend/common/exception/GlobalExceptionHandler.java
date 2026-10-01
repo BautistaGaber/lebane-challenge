@@ -9,14 +9,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -43,15 +48,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidation(MethodArgumentNotValidException exception, HttpServletRequest request) {
 
-        List<FieldValidationError> validationErrors =
-                exception.getBindingResult()
+        List<FieldValidationError> validationErrors = exception.getBindingResult()
                         .getFieldErrors()
                         .stream()
                         .map(error -> new FieldValidationError(
                                 error.getField(),
-                                error.getDefaultMessage()
-                        ))
-                        .toList();
+                                error.getDefaultMessage())).toList();
 
         return buildResponse(
                 HttpStatus.BAD_REQUEST,
@@ -64,14 +66,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiErrorResponse> handleConstraintViolation(ConstraintViolationException exception, HttpServletRequest request) {
 
-        List<FieldValidationError> validationErrors =
-                exception.getConstraintViolations()
+        List<FieldValidationError> validationErrors = exception.getConstraintViolations()
                         .stream()
                         .map(violation -> new FieldValidationError(
                                 violation.getPropertyPath().toString(),
-                                violation.getMessage()
-                        ))
-                        .toList();
+                                violation.getMessage())).toList();
 
         return buildResponse(
                 HttpStatus.BAD_REQUEST,
@@ -113,6 +112,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(StorageException.class)
     public ResponseEntity<ApiErrorResponse> handleStorage(StorageException exception, HttpServletRequest request) {
+
+        log.error("Storage error while processing {} {}",request.getMethod(),request.getRequestURI(),exception);
+
         return buildResponse(
                 HttpStatus.SERVICE_UNAVAILABLE,
                 "Image storage service is temporarily unavailable",
@@ -122,14 +124,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> handleUnexpectedException(Exception exception, HttpServletRequest request
-    ) {
-        return buildResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "An unexpected error occurred",
-                request,
-                List.of()
-        );
+    public ResponseEntity<ApiErrorResponse> handleUnexpectedException(Exception exception,HttpServletRequest request) {
+
+        log.error("Unexpected error while processing {} {}",request.getMethod(),request.getRequestURI(),exception);
+
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,"An unexpected error occurred",request,List.of());
     }
 
     private ResponseEntity<ApiErrorResponse> buildResponse(HttpStatus status, String message, HttpServletRequest request, List<FieldValidationError> validationErrors) {
@@ -162,5 +161,22 @@ public class GlobalExceptionHandler {
                 exception.getMessage(),
                 request,
                 List.of());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiErrorResponse> handleMaxUploadSizeExceeded(MaxUploadSizeExceededException exception, HttpServletRequest request) {
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                "The uploaded file exceeds the maximum allowed size",
+                request,
+                List.of());
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ApiErrorResponse> handleUnsupportedMediaType(HttpMediaTypeNotSupportedException exception,HttpServletRequest request) {
+
+        log.warn("Unsupported media type for {} {}: {}",request.getMethod(),request.getRequestURI(),exception.getContentType());
+
+        return buildResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE,"Unsupported media type",request,List.of());
     }
 }
