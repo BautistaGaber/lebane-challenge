@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
-import { getDepartments } from '../services/departmentService'
-import type {DepartmentListItem, PageResponse,} from '../types/department'
+import {useEffect, useState} from 'react'
+import {getDepartments} from '../services/departmentService'
+import type {DepartmentFilters, DepartmentListItem, PageResponse,} from '../types/department'
 
-export function useDepartments() {
+export function useDepartments(filters: DepartmentFilters, page: number, size: 10) {
     const [data, setData] = useState<PageResponse<DepartmentListItem> | null>(null)
 
     const [loading, setLoading] = useState(true)
@@ -12,11 +12,11 @@ export function useDepartments() {
         async function loadDepartments() {
             try {
                 setLoading(true)
+                setError(null)
 
-                const response = await getDepartments()
+                const response = await getDepartments({filters, page, size})
 
                 setData(response)
-                setError(null)
             } catch {
                 setError('No se pudieron cargar los departamentos.')
             } finally {
@@ -25,11 +25,11 @@ export function useDepartments() {
         }
 
         loadDepartments()
-    }, [])
+    }, [filters, page, size])
 
     return {
         departments: data?.contenido ?? [],
-        page: data,
+        pageInfo: data,
         loading,
         error,
     }

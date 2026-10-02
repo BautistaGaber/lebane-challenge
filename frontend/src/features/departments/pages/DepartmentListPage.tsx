@@ -1,9 +1,23 @@
+import {useState} from 'react'
 import {Link} from 'react-router-dom'
-import {DepartmentTable} from "../components/DepartmentTable.tsx";
-import {useDepartments} from "../hooks/useDepartments.ts";
+import {DepartmentFilters as DepartmentFiltersComponent} from '../components/DepartmentFilters'
+import {DepartmentTable} from '../components/DepartmentTable'
+import {useDepartments} from '../hooks/useDepartments'
+import type {DepartmentFilters} from '../types/department'
 
 export function DepartmentsListPage() {
-    const {departments, loading, error} = useDepartments()
+    const [draftFilters, setDraftFilters] = useState<DepartmentFilters>({})
+
+    const [appliedFilters, setAppliedFilters] = useState<DepartmentFilters>({})
+
+    const [page, setPage] = useState(0)
+
+    const {
+        departments,
+        loading,
+        pageInfo,
+        error
+    } = useDepartments(appliedFilters, page, 10,)
 
     return (
         <div>
@@ -26,96 +40,67 @@ export function DepartmentsListPage() {
                 </Link>
             </div>
 
-            <section className="mt-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-                    <div className="xl:col-span-2">
-                        <label
-                            htmlFor="search"
-                            className="mb-2 block text-sm font-medium text-slate-700"
-                        >
-                            Buscar
-                        </label>
-
-                        <input
-                            id="search"
-                            type="text"
-                            placeholder="Título o dirección..."
-                            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        />
-                    </div>
-
-                    <div>
-                        <label
-                            htmlFor="availability"
-                            className="mb-2 block text-sm font-medium text-slate-700"
-                        >
-                            Estado
-                        </label>
-
-                        <select
-                            id="availability"
-                            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        >
-                            <option value="">Todos</option>
-                            <option value="true">Disponibles</option>
-                            <option value="false">No disponibles</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label
-                            htmlFor="minPrice"
-                            className="mb-2 block text-sm font-medium text-slate-700"
-                        >
-                            Precio mínimo
-                        </label>
-
-                        <input
-                            id="minPrice"
-                            type="number"
-                            min="0"
-                            placeholder="0"
-                            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        />
-                    </div>
-
-                    <div>
-                        <label
-                            htmlFor="maxPrice"
-                            className="mb-2 block text-sm font-medium text-slate-700"
-                        >
-                            Precio máximo
-                        </label>
-
-                        <input
-                            id="maxPrice"
-                            type="number"
-                            min="0"
-                            placeholder="Sin límite"
-                            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        />
-                    </div>
-                </div>
-            </section>
+            <div className="mt-8">
+                <DepartmentFiltersComponent
+                    filters={draftFilters}
+                    onChange={setDraftFilters}
+                    onApply={() => {
+                        setAppliedFilters(draftFilters)
+                        setPage(0)
+                    }}
+                    onClear={() => {
+                        setDraftFilters({})
+                        setAppliedFilters({})
+                        setPage(0)
+                    }}
+                />
+            </div>
 
             <section className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="mt-6">
-                    {loading && (
-                        <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
-                            Cargando departamentos...
-                        </div>
-                    )}
+                {loading && (
+                    <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+                        Cargando departamentos...
+                    </div>
+                )}
 
-                    {error && (
-                        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
-                            {error}
-                        </div>
-                    )}
+                {error && (
+                    <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+                        {error}
+                    </div>
+                )}
 
-                    {!loading && !error && (
-                        <DepartmentTable departments={departments}/>
-                    )}
-                </div>
+                {!loading && !error && (
+                    <DepartmentTable departments={departments}/>
+                )}
+                {pageInfo && pageInfo.totalPaginas > 0 && (
+                    <div className="mt-6 flex items-center justify-between">
+                        <p className="text-sm text-slate-600">
+                            Página {pageInfo.pagina + 1} de {pageInfo.totalPaginas}
+                            {' · '}
+                            {pageInfo.totalElementos} departamentos
+                        </p>
+
+                        <div className="flex gap-2">
+                            <button
+                                type="button"
+                                disabled={pageInfo.primera}
+                                onClick={() => setPage((currentPage) => currentPage - 1)}
+                                className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                Anterior
+                            </button>
+
+                            <button
+                                type="button"
+                                disabled={pageInfo.ultima}
+                                onClick={() => setPage((currentPage) => currentPage + 1)}
+                                className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                Siguiente
+                            </button>
+                        </div>
+                    </div>
+                )}
             </section>
         </div>
     )

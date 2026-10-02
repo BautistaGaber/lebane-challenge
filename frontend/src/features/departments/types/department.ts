@@ -21,3 +21,11 @@ export interface PageResponse<T> {
     primera: boolean
     ultima: boolean
 }
+
+export interface DepartmentFilters {
+    disponible?: boolean
+    precioMin?: string
+    precioMax?: string
+    metrosCuadradosMin?: string
+    metrosCuadradosMax?: string
+}

@@ -1,13 +1,12 @@
 import {Link} from 'react-router-dom'
 import type {DepartmentListItem} from '../types/department'
+import {ImageWithFallback} from "../../../components/ImageWithFallback.tsx";
 
 type DepartmentTableProps = {
     departments: DepartmentListItem[]
 }
 
-export function DepartmentTable({
-                                    departments,
-                                }: DepartmentTableProps) {
+export function DepartmentTable({departments}: DepartmentTableProps) {
     return (
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
             <div className="overflow-x-auto">
@@ -34,11 +33,12 @@ export function DepartmentTable({
                         >
                             <td className="px-5 py-4">
                                 {department.imagenPrincipal ? (
-                                    <img
-                                        src={department.imagenPrincipal}
-                                        alt={department.titulo}
-                                        className="h-12 w-16 rounded-lg object-cover"
-                                    />
+                                    <td className="h-12 w-16 rounded-lg object-cover">
+                                        <ImageWithFallback
+                                            src={department.imagenPrincipal}
+                                            alt={department.titulo}
+                                        />
+                                    </td>
                                 ) : (
                                     <div
                                         className="flex h-12 w-16 items-center justify-center rounded-lg bg-slate-100 text-xs text-slate-400">
