@@ -32,7 +32,7 @@ public class S3Config {
     @Bean
     public S3Presigner s3Presigner(StorageProperties properties) {
         return S3Presigner.builder()
-                .endpointOverride(URI.create(properties.endpoint()))
+                .endpointOverride(URI.create(properties.publicEndpoint()))
                 .region(Region.of(properties.region()))
                 .credentialsProvider(credentialsProvider(properties))
                 .serviceConfiguration(s3Configuration())

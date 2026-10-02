@@ -52,6 +52,7 @@ services:
       DB_PASSWORD: ${POSTGRES_PASSWORD}
 
       S3_ENDPOINT: http://localstack:4566
+      S3_PUBLIC_ENDPOINT: http://localhost:4566
       S3_REGION: us-east-1
       S3_BUCKET: ${S3_BUCKET:-lebane-images}
       S3_ACCESS_KEY: ${S3_ACCESS_KEY:-test}
