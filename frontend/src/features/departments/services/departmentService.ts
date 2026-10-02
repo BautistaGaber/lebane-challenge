@@ -1,5 +1,5 @@
 import {apiRequest} from '../../../api/httpClient'
-import type {DepartmentFilters, DepartmentListItem, PageResponse} from '../types/department'
+import type {DepartmentDetail, DepartmentFilters, DepartmentListItem, PageResponse} from '../types/department'
 
 type GetDepartmentsParams = {
     filters: DepartmentFilters
@@ -28,12 +28,16 @@ export async function getDepartments({filters, page, size}: GetDepartmentsParams
     }
 
     if (filters.metrosCuadradosMin) {
-        params.set('metrosCuadradosMin',filters.metrosCuadradosMin)
+        params.set('metrosCuadradosMin', filters.metrosCuadradosMin)
     }
 
     if (filters.metrosCuadradosMax) {
-        params.set('metrosCuadradosMax',filters.metrosCuadradosMax)
+        params.set('metrosCuadradosMax', filters.metrosCuadradosMax)
     }
 
     return apiRequest<PageResponse<DepartmentListItem>>(`/api/departamentos?${params.toString()}`)
+}
+
+export async function getDepartmentById(id: number): Promise<DepartmentDetail> {
+    return apiRequest<DepartmentDetail>(`/api/departamentos/${id}`)
 }

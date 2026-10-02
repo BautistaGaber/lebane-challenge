@@ -29,3 +29,34 @@ export interface DepartmentFilters {
     metrosCuadradosMin?: string
     metrosCuadradosMax?: string
 }
+
+export interface DepartmentImage {
+    id: number
+    url: string
+    principal: boolean
+    orden: number
+}
+
+export interface DepartmentInquiry {
+    id: number
+    nombre: string
+    email: string
+    mensaje: string
+    fecha: string
+}
+
+export interface DepartmentDetail {
+    id: number
+    titulo: string
+    descripcion: string
+    precio: number
+    moneda: CurrencyCode
+    metrosCuadrados: number
+    direccion: string
+    latitud: number | null
+    longitud: number | null
+    disponible: boolean
+    version: number
+    imagenes: DepartmentImage[]
+    consultas: DepartmentInquiry[]
+}

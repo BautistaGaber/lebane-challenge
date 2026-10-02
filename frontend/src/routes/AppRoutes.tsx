@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import {DepartmentsListPage} from "../features/departments/pages/DepartmentListPage.tsx";
 import {DepartmentCreatePage} from "../features/departments/pages/DepartmentCreatePage.tsx";
-import {DepartmentsDetailPage} from "../features/departments/pages/DepartmentDetailPage.tsx";
+import {DepartmentDetailPage} from "../features/departments/pages/DepartmentDetailPage.tsx";
 import {DepartmentsEditPage} from "../features/departments/pages/DepartmentEditPage.tsx";
 import {AppLayout} from "../features/departments/components/layout/AppLayout.tsx";
 
@@ -26,7 +26,7 @@ export function AppRoutes() {
 
             <Route
                 path="/departamentos/:id"
-                element={<DepartmentsDetailPage />}
+                element={<DepartmentDetailPage />}
             />
 
             <Route
