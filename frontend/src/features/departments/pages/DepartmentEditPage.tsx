@@ -4,6 +4,7 @@ import {useDepartment} from '../hooks/useDepartment'
 import {updateDepartment} from '../services/departmentService'
 import type {CurrencyCode, DepartmentUpdateRequest,} from '../types/department'
 import {ApiError} from "../../../api/httpClient.ts";
+import {AddressAutocomplete} from "../components/AddressAutocomplete.tsx";
 
 export function DepartmentEditPage() {
     const {id} = useParams()
@@ -33,7 +34,7 @@ export function DepartmentEditPage() {
             latitud: department.latitud,
             longitud: department.longitud,
             disponible: department.disponible,
-            version: department.version,
+            version: department.version
         })
     }, [department])
 
@@ -41,6 +42,13 @@ export function DepartmentEditPage() {
         event.preventDefault()
 
         if (!form) {
+            return
+        }
+
+        const addressChanged = form.direccion.trim() !== department?.direccion.trim()
+
+        if (addressChanged && (form.latitud === null || form.longitud === null)) {
+            setSaveError('Seleccioná una dirección de las sugerencias del autocompletado.',)
             return
         }
 
@@ -204,15 +212,31 @@ export function DepartmentEditPage() {
                         </FormField>
 
                         <FormField label="Dirección">
-                            <input
-                                type="text"
+                            <AddressAutocomplete
                                 value={form.direccion}
-                                onChange={(event) =>
-                                    setForm({...form, direccion: event.target.value,
+                                onChange={(direccion) =>
+                                    setForm({
+                                        ...form,
+                                        direccion,
+                                        latitud: null,
+                                        longitud: null,
                                     })
                                 }
-                                className="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+                                onSelect={(address) =>
+                                    setForm({
+                                        ...form,
+                                        direccion: address.formatted,
+                                        latitud: address.latitude,
+                                        longitud: address.longitude
+                                    })
+                                }
                             />
+
+                            {form.latitud !== null && form.longitud !== null && (
+                                <p className="mt-2 text-xs text-slate-400">
+                                    Coordenadas: {form.latitud}, {form.longitud}
+                                </p>
+                            )}
                         </FormField>
                     </div>
 

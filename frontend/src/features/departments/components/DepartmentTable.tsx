@@ -33,12 +33,10 @@ export function DepartmentTable({departments}: DepartmentTableProps) {
                         >
                             <td className="px-5 py-4">
                                 {department.imagenPrincipal ? (
-                                    <td className="h-12 w-16 rounded-lg object-cover">
                                         <ImageWithFallback
                                             src={department.imagenPrincipal}
                                             alt={department.titulo}
                                         />
-                                    </td>
                                 ) : (
                                     <div
                                         className="flex h-12 w-16 items-center justify-center rounded-lg bg-slate-100 text-xs text-slate-400">
