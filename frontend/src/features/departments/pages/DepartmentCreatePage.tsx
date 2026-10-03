@@ -216,8 +216,9 @@ export function DepartmentCreatePage() {
                     </h3>
 
                     <div className="mt-6 grid gap-5 md:grid-cols-2">
-                        <FormField label="Título">
+                        <FormField label="Título" htmlFor="department-title">
                             <input
+                                id="department-title"
                                 type="text"
                                 value={form.titulo}
                                 maxLength={120}
@@ -232,8 +233,9 @@ export function DepartmentCreatePage() {
                             />
                         </FormField>
 
-                        <FormField label="Estado">
+                        <FormField label="Estado" htmlFor="department-available">
                             <select
+                                id="department-available"
                                 value={form.disponible.toString()}
                                 onChange={(event) =>
                                     setForm((current) => ({
@@ -253,8 +255,9 @@ export function DepartmentCreatePage() {
                             </select>
                         </FormField>
 
-                        <FormField label="Precio">
+                        <FormField label="Precio" htmlFor="department-price">
                             <input
+                                id="department-price"
                                 type="number"
                                 min="0.01"
                                 step="0.01"
@@ -270,8 +273,9 @@ export function DepartmentCreatePage() {
                             />
                         </FormField>
 
-                        <FormField label="Moneda">
+                        <FormField label="Moneda" htmlFor="department-currency">
                             <select
+                                id="department-currency"
                                 value={form.moneda}
                                 onChange={(event) =>
                                     setForm((current) => ({
@@ -291,8 +295,9 @@ export function DepartmentCreatePage() {
                             </select>
                         </FormField>
 
-                        <FormField label="Superficie (m²)">
+                        <FormField label="Superficie (m²)" htmlFor="department-area">
                             <input
+                                id="department-area"
                                 type="number"
                                 min="0.01"
                                 step="0.01"
@@ -345,8 +350,9 @@ export function DepartmentCreatePage() {
                     </div>
 
                     <div className="mt-5">
-                        <FormField label="Descripción">
+                        <FormField label="Descripción" htmlFor="department-description">
                             <textarea
+                                id="department-description"
                                 rows={5}
                                 maxLength={2000}
                                 required
@@ -442,13 +448,17 @@ export function DepartmentCreatePage() {
 
 type FormFieldProps = {
     label: string
+    htmlFor?: string
     children: ReactNode
 }
 
-function FormField({label, children}: FormFieldProps) {
+function FormField({label, htmlFor, children}: FormFieldProps) {
     return (
         <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">
+            <label
+                htmlFor={htmlFor}
+                className="mb-2 block text-sm font-medium text-slate-700"
+            >
                 {label}
             </label>
             {children}

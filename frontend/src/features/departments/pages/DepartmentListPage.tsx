@@ -5,7 +5,7 @@ import {DepartmentTable} from '../components/DepartmentTable'
 import {useDepartments} from '../hooks/useDepartments'
 import type {DepartmentFilters} from '../types/department'
 
-export function DepartmentsListPage() {
+export function DepartmentListPage() {
     const [draftFilters, setDraftFilters] = useState<DepartmentFilters>({})
 
     const [appliedFilters, setAppliedFilters] = useState<DepartmentFilters>({})
