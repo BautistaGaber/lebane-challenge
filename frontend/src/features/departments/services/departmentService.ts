@@ -1,5 +1,6 @@
 import {apiRequest} from '../../../api/httpClient'
 import type {
+    DepartmentCreateRequest,
     DepartmentDetail,
     DepartmentFilters,
     DepartmentListItem,
@@ -56,4 +57,27 @@ export async function updateDepartment(id: number, data: DepartmentUpdateRequest
         },
         body: JSON.stringify(data)
     })
+}
+
+export async function createDepartment(data: DepartmentCreateRequest, images: File[],): Promise<DepartmentDetail> {
+    const formData = new FormData()
+
+    formData.append(
+        'departamento',
+        new Blob([JSON.stringify(data)],
+            {
+                type: 'application/json'
+            },
+        ),
+    )
+
+    images.forEach((image) => {formData.append('imagenes', image)})
+
+    return apiRequest<DepartmentDetail>(
+        '/api/departamentos',
+        {
+            method: 'POST',
+            body: formData,
+        },
+    )
 }

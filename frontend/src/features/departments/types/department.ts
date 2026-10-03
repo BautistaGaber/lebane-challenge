@@ -73,3 +73,15 @@ export interface DepartmentUpdateRequest {
     disponible: boolean
     version: number
 }
+
+export interface DepartmentCreateRequest {
+    titulo: string
+    descripcion: string
+    precio: number
+    moneda: CurrencyCode
+    metrosCuadrados: number
+    direccion: string
+    latitud: number | null
+    longitud: number | null
+    disponible: boolean
+}
