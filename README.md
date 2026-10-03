@@ -4,6 +4,20 @@ Challenge técnico Full Stack desarrollado con **Java 21, Spring Boot 3, React y
 
 El proyecto implementa un panel de administración para una inmobiliaria, permitiendo listar, filtrar, crear, visualizar y editar departamentos.
 
+
+## 🌐 Demo en vivo
+
+Podés probar la aplicación desplegada directamente desde estas URLs:
+
+- **Frontend:** https://lebane-challenge.vercel.app
+- **Backend:** https://lebane-backend-challenge.onrender.com
+- **Swagger UI:** https://lebane-backend-challenge.onrender.com/swagger-ui/index.html
+- **Health Check:** https://lebane-backend-challenge.onrender.com/actuator/health
+
+> El backend está alojado en Render, por lo que la primera petición puede tardar algunos segundos si la instancia estaba inactiva.
+
+---
+
 La aplicación incluye:
 
 - API REST con Spring Boot.
@@ -21,6 +35,7 @@ La aplicación incluye:
 - Tests unitarios e integración en frontend.
 - Tests end-to-end con Playwright.
 - Infraestructura local basada en Docker.
+- Deploy cloud con Vercel, Render y Supabase Storage.
 - Documentación de API con OpenAPI / Swagger.
 
 ---
@@ -178,45 +193,6 @@ PostgreSQL + S3
 
 ---
 
-# Flujo de una request en backend
-
-```mermaid
-sequenceDiagram
-
-    participant U as Usuario
-    participant R as React Frontend
-    participant C as Spring Controller
-    participant S as Department Service
-    participant SPEC as JPA Specification
-    participant DB as PostgreSQL
-    participant S3 as LocalStack S3
-
-    U->>R: Acción del usuario
-    R->>C: Request HTTP
-
-    C->>C: Validación del DTO
-    C->>S: Delegación de lógica
-
-    alt Listado de departamentos
-        S->>SPEC: Construcción de filtros dinámicos
-        SPEC->>DB: Query Criteria
-        DB-->>SPEC: Resultado paginado
-        SPEC-->>S: Departamentos
-    else Creación de departamento
-        S->>DB: Persistencia del departamento
-        S->>S3: Carga de imágenes
-        S3-->>S: Metadata / URL del objeto
-        S->>DB: Persistencia de metadata de imágenes
-    else Detalle / Actualización
-        S->>DB: Lectura o actualización
-        DB-->>S: Datos del departamento
-    end
-
-    S-->>C: DTO resultante
-    C-->>R: Response HTTP
-    R-->>U: UI actualizada
-```
-
 ---
 
 # Stack tecnológico
@@ -263,6 +239,9 @@ sequenceDiagram
 - Docker Compose
 - PostgreSQL
 - LocalStack S3
+- Render
+- Supabase Storage
+- Vercel
 
 ---
 
@@ -1536,32 +1515,6 @@ npm test
 
 ---
 
-# Configuración de testing frontend
-
-Vite utiliza:
-
-```ts
-import.meta.env
-```
-
-mientras que Jest corre en un entorno Node/jsdom.
-
-Por este motivo se aisló el acceso a environment en:
-
-```text
-src/config/environment.ts
-```
-
-Durante los tests este módulo se reemplaza por:
-
-```text
-src/test/mocks/environment.ts
-```
-
-Esto evita hacks globales y mantiene una separación clara entre configuración de aplicación y testing.
-
-React Router también requiere APIs como `TextEncoder`, por lo que el entorno compartido de tests provee los polyfills necesarios.
-
 ---
 
 # Tests End-to-End
@@ -1723,14 +1676,7 @@ La lógica de negocio accede al almacenamiento mediante una abstracción.
 
 Esto evita acoplar el dominio directamente a LocalStack.
 
-En producción podría reemplazarse por:
-
-```text
-AWS S3
-Cloudflare R2
-MinIO
-otro proveedor S3-compatible
-```
+En producción se utiliza **Supabase Storage**, manteniendo la misma abstracción S3-compatible.
 
 ---
 
@@ -2014,122 +1960,83 @@ Con más tiempo podrían incorporarse:
 
 ---
 
-# Posible evolución productiva
+---
+
+---
+
+---
+
+# Deploy en la nube
+
+La aplicación también está desplegada para poder probar el flujo completo sin levantar el entorno local.
 
 ```mermaid
 flowchart LR
-
-    USERS["Usuarios"]
-
-    CDN["CDN"]
-
-    FRONTEND["React estático"]
-
-    LB["Load Balancer"]
-
-    API1["Spring Boot Instance"]
-    API2["Spring Boot Instance"]
-
-    DB[("PostgreSQL administrado")]
-
-    CACHE[("Redis")]
-
-    S3[("Object Storage administrado")]
-
-    GEO["Geoapify"]
-
-    USERS --> CDN
-    CDN --> FRONTEND
-
-    FRONTEND --> LB
-
-    LB --> API1
-    LB --> API2
-
-    API1 --> DB
-    API2 --> DB
-
-    API1 --> CACHE
-    API2 --> CACHE
-
-    API1 --> S3
-    API2 --> S3
-
-    FRONTEND --> GEO
+    U["Usuario"] --> V["Vercel<br/>React"]
+    V --> R["Render<br/>Spring Boot"]
+    V --> G["Geoapify"]
+    R --> P[("Render PostgreSQL")]
+    R --> S[("Supabase Storage<br/>S3-compatible")]
 ```
 
-Esta arquitectura no se implementó porque el objetivo del challenge es entregar una solución full-stack local, reproducible y mantenible, evitando infraestructura distribuida innecesaria.
+Servicios utilizados:
 
----
+- **Frontend:** Vercel.
+- **Backend:** Render.
+- **Base de datos:** PostgreSQL en Render.
+- **Storage:** Supabase Storage mediante protocolo S3-compatible.
+- **Autocompletado:** Geoapify.
 
-# Resumen del flujo de aplicación
+Variables principales de producción:
 
-```mermaid
-flowchart TD
+```env
+VITE_API_URL=https://lebane-backend-challenge.onrender.com
 
-    HOME["Listado"]
+DB_URL=jdbc:postgresql://<host>:5432/<database>
+DB_USERNAME=<username>
+DB_PASSWORD=<password>
 
-    FILTER["Filtros / Paginación"]
-
-    DETAIL["Detalle"]
-
-    CREATE["Crear"]
-
-    EDIT["Editar"]
-
-    GEO["Autocompletado"]
-
-    UPLOAD["Carga de imágenes"]
-
-    API["Spring Boot API"]
-
-    DB[("PostgreSQL")]
-
-    STORAGE[("LocalStack S3")]
-
-    HOME --> FILTER
-    HOME --> DETAIL
-    HOME --> CREATE
-
-    DETAIL --> EDIT
-
-    CREATE --> GEO
-    CREATE --> UPLOAD
-
-    EDIT --> GEO
-
-    FILTER --> API
-    DETAIL --> API
-    CREATE --> API
-    EDIT --> API
-
-    API --> DB
-    API --> STORAGE
+S3_ENDPOINT=<supabase-s3-endpoint>
+S3_PUBLIC_ENDPOINT=<supabase-public-storage-url>
+S3_REGION=us-east-1
+S3_BUCKET=lebane-images
+S3_ACCESS_KEY=<access-key>
+S3_SECRET_KEY=<secret-key>
 ```
 
----
-
-# Flujo de desarrollo local
-
-Luego de clonar el repositorio:
-
-```text
-1. Configurar variables de entorno
-2. Ejecutar Docker Compose
-3. Inicia PostgreSQL
-4. Inicia LocalStack
-5. Se inicializa el bucket S3
-6. Inicia Spring Boot
-7. Flyway ejecuta migraciones
-8. Se ejecuta el DatabaseSeeder
-9. Se reparan imágenes sintéticas faltantes
-10. Iniciar frontend React
-11. Abrir http://localhost:5173
-```
+Las credenciales reales no se versionan.
 
 ---
 
 # URLs útiles
+
+## Producción
+
+Frontend:
+
+```text
+https://lebane-challenge.vercel.app
+```
+
+Backend:
+
+```text
+https://lebane-backend-challenge.onrender.com
+```
+
+Swagger UI:
+
+```text
+https://lebane-backend-challenge.onrender.com/swagger-ui/index.html
+```
+
+Health check:
+
+```text
+https://lebane-backend-challenge.onrender.com/actuator/health
+```
+
+## Local
 
 Frontend:
 
@@ -2161,51 +2068,8 @@ API de departamentos:
 http://localhost:8080/api/departamentos
 ```
 
+
 ---
-
-# Checklist de implementación
-
-- [x] Java 21
-- [x] Spring Boot 3
-- [x] React
-- [x] TypeScript
-- [x] PostgreSQL
-- [x] Spring Data JPA
-- [x] JPA Specifications
-- [x] Criteria API
-- [x] DTOs
-- [x] Bean Validation
-- [x] Manejo global de errores
-- [x] Swagger / OpenAPI
-- [x] Docker
-- [x] Docker Compose
-- [x] Object storage compatible con S3
-- [x] LocalStack
-- [x] Seed con 500+ departamentos
-- [x] Imágenes del seed en S3
-- [x] Recuperación de imágenes del seed
-- [x] Autocompletado de direcciones
-- [x] Coordenadas geográficas
-- [x] Listado paginado
-- [x] Filtros dinámicos
-- [x] Creación de departamentos
-- [x] Detalle
-- [x] Edición
-- [x] Upload de imágenes
-- [x] Validación de imágenes
-- [x] Fallback de imágenes
-- [x] Estados loading
-- [x] Estados de error
-- [x] UI responsiva
-- [x] Optimistic locking
-- [x] Tests unitarios backend
-- [x] Tests de integración backend
-- [x] Testcontainers
-- [x] Tests Jest
-- [x] React Testing Library
-- [x] Playwright E2E
-- [x] Build productivo frontend
-- [x] Lint frontend
 
 ---
 
