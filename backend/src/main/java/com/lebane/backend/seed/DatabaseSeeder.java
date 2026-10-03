@@ -47,32 +47,74 @@ public class DatabaseSeeder implements ApplicationRunner {
             return;
         }
 
+        seedMissingDepartments();
+
+        repairMissingSeedImages();
+    }
+
+    private void seedMissingDepartments() {
+
         long existingDepartments = departmentRepository.count();
 
         if (existingDepartments >= properties.departmentCount()) {
-
-            log.info("Database already contains {} departments. Seed skipped.",existingDepartments);
+            log.info("Database already contains {} departments. No departments need to be created.", existingDepartments);
             return;
         }
 
         int missingDepartments = properties.departmentCount() - (int) existingDepartments;
 
-        log.info("Starting database seed. Creating {} departments.",missingDepartments);
+        log.info("Starting database seed. Creating {} departments.", missingDepartments);
 
         Random random = new Random(RANDOM_SEED + existingDepartments);
 
-        for (int index = 0;index < missingDepartments;index++) {
+        for (int index = 0; index < missingDepartments; index++) {
 
-            Department department = createDepartment(random,existingDepartments + index + 1);
+            Department department = createDepartment(random, existingDepartments + index + 1);
 
             departmentRepository.saveAndFlush(department);
 
-            createImages(department,random);
+            createImages(department, random);
 
-            createInquiries(department,random);
+            createInquiries(department, random);
         }
 
-        log.info("Database seed completed. Total departments: {}",departmentRepository.count());
+        log.info("Database seed completed. Total departments: {}", departmentRepository.count());
+    }
+
+    private void repairMissingSeedImages() {
+
+        log.info("Checking seed images in storage.");
+
+        int checkedImages = 0;
+        int repairedImages = 0;
+
+        for (Department department : departmentRepository.findAll()) {
+
+            for (Image image : department.getImages()) {
+
+                String objectKey = image.getObjectKey();
+
+                if (!objectKey.contains("/seed-")) {
+                    continue;
+                }
+
+                checkedImages++;
+
+                if (storageService.exists(objectKey)) {
+                    continue;
+                }
+
+                log.warn("Missing seed image detected in storage: {}", objectKey);
+
+                byte[] content = imageGenerator.generate(department.getTitle(), image.getDisplayOrder());
+
+                storageService.upload(content, image.getContentType(), objectKey);
+
+                repairedImages++;
+            }
+        }
+
+        log.info("Seed image verification completed. Checked: {}, repaired: {}.", checkedImages, repairedImages);
     }
 
     private Department createDepartment(Random random,long sequence) {

@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 
@@ -110,6 +108,30 @@ public class S3StorageService implements StorageService{
 
         } catch (RuntimeException exception) {
             throw new StorageException("Could not generate image URL", exception);
+        }
+    }
+
+    @Override
+    public boolean exists(String objectKey) {
+        try {
+            HeadObjectRequest request = HeadObjectRequest.builder()
+                    .bucket(properties.bucket())
+                    .key(objectKey)
+                    .build();
+
+            s3Client.headObject(request);
+
+            return true;
+
+        } catch (NoSuchKeyException exception) {
+            return false;
+
+        } catch (S3Exception exception) {
+            if (exception.statusCode() == 404) {
+                return false;
+            }
+
+            throw new StorageException("Could not verify object existence in storage", exception);
         }
     }
 

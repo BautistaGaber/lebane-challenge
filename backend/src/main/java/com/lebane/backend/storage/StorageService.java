@@ -10,4 +10,6 @@ public interface StorageService {
     void delete(String objectKey);
 
     String getUrl(String objectKey);
+
+    boolean exists(String objectKey);
 }
