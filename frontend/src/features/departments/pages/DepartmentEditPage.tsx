@@ -3,6 +3,7 @@ import {Link, useNavigate, useParams} from 'react-router-dom'
 import {useDepartment} from '../hooks/useDepartment'
 import {updateDepartment} from '../services/departmentService'
 import type {CurrencyCode, DepartmentUpdateRequest,} from '../types/department'
+import {ApiError} from "../../../api/httpClient.ts";
 
 export function DepartmentEditPage() {
     const {id} = useParams()
@@ -50,8 +51,29 @@ export function DepartmentEditPage() {
             await updateDepartment(departmentId,form)
 
             navigate(`/departamentos/${departmentId}`)
-        } catch {
-            setSaveError('No se pudieron guardar los cambios.')
+        } catch(error) {
+            if (error instanceof ApiError) {
+                switch (error.status) {
+                    case 400:
+                        setSaveError(
+                            'Hay datos inválidos. Revisá los campos e intentá nuevamente.')
+                        break
+
+                    case 404:
+                        setSaveError('El departamento ya no existe.')
+                        break
+
+                    case 409:
+                        setSaveError('El departamento fue modificado por otra operación. Volvé a cargar la página antes de guardar nuevamente.')
+                        break
+
+                    default:
+                        setSaveError('No se pudieron guardar los cambios. Intentá nuevamente.')
+                }
+
+                return
+            }
+            setSaveError('Ocurrió un error inesperado. Intentá nuevamente.',)
         } finally {
             setSaving(false)
         }
