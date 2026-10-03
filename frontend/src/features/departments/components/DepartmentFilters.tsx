@@ -94,7 +94,7 @@ export function DepartmentFilters({filters, onChange, onApply, onClear,}: Depart
                 />
             </div>
 
-            <div className="mt-5 flex justify-end gap-3">
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:flex sm:justify-end">
                 <button
                     type="button"
                     onClick={onClear}

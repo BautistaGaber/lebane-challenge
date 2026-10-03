@@ -200,7 +200,7 @@ export function DepartmentCreatePage() {
                     ← Volver al listado
                 </Link>
 
-                <h2 className="mt-3 text-3xl font-bold text-slate-900">
+                <h2 className="mt-3 text-2xl font-bold text-slate-900 sm:text-3xl">
                     Crear departamento
                 </h2>
 
@@ -210,7 +210,7 @@ export function DepartmentCreatePage() {
             </div>
 
             <form onSubmit={handleSubmit}>
-                <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <section className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
                     <h3 className="text-lg font-semibold text-slate-900">
                         Información básica
                     </h3>
@@ -364,7 +364,7 @@ export function DepartmentCreatePage() {
                     </div>
                 </section>
 
-                <section className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <section className="mt-6 rounded-xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
                     <h3 className="text-lg font-semibold text-slate-900">
                         Imágenes
                     </h3>

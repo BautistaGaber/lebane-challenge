@@ -27,7 +27,7 @@ export function DepartmentDetailPage() {
 
     return (
         <div>
-            <div className="mb-6 flex items-start justify-between gap-4">
+            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                     <Link
                         to="/departamentos"
@@ -36,7 +36,7 @@ export function DepartmentDetailPage() {
                         ← Volver a departamentos
                     </Link>
 
-                    <h2 className="mt-3 text-3xl font-bold text-slate-900">
+                    <h2 className="mt-3 text-2xl font-bold text-slate-900 sm:text-3xl">
                         {department.titulo}
                     </h2>
 
@@ -47,7 +47,7 @@ export function DepartmentDetailPage() {
 
                 <Link
                     to={`/departamentos/${department.id}/editar`}
-                    className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+                    className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
                 >
                     Editar departamento
                 </Link>
@@ -171,13 +171,13 @@ export function DepartmentDetailPage() {
                                 key={inquiry.id}
                                 className="rounded-xl border border-slate-200 p-4"
                             >
-                                <div className="flex items-start justify-between gap-4">
+                                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                                     <div>
                                         <p className="font-medium text-slate-900">
                                             {inquiry.nombre}
                                         </p>
 
-                                        <p className="text-sm text-slate-500">
+                                        <p className="break-all text-sm text-slate-500">
                                             {inquiry.email}
                                         </p>
                                     </div>

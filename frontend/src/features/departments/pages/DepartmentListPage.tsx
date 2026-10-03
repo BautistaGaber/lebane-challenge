@@ -21,7 +21,7 @@ export function DepartmentsListPage() {
 
     return (
         <div>
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                     <h2 className="text-3xl font-bold text-slate-900">
                         Departamentos
@@ -34,7 +34,7 @@ export function DepartmentsListPage() {
 
                 <Link
                     to="/departamentos/nuevo"
-                    className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+                    className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
                 >
                     Nuevo departamento
                 </Link>
@@ -56,7 +56,7 @@ export function DepartmentsListPage() {
                 />
             </div>
 
-            <section className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <section className="mt-6 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:p-6">
                 {loading && (
                     <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
                         Cargando departamentos...
@@ -73,14 +73,14 @@ export function DepartmentsListPage() {
                     <DepartmentTable departments={departments}/>
                 )}
                 {pageInfo && pageInfo.totalPaginas > 0 && (
-                    <div className="mt-6 flex items-center justify-between">
+                    <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <p className="text-sm text-slate-600">
                             Página {pageInfo.pagina + 1} de {pageInfo.totalPaginas}
                             {' · '}
                             {pageInfo.totalElementos} departamentos
                         </p>
 
-                        <div className="flex gap-2">
+                        <div className="grid grid-cols-2 gap-2 sm:flex">
                             <button
                                 type="button"
                                 disabled={pageInfo.primera}

@@ -114,7 +114,7 @@ export function DepartmentEditPage() {
                         ← Volver al detalle
                     </Link>
 
-                    <h2 className="mt-3 text-3xl font-bold text-slate-900">
+                    <h2 className="mt-3 text-2xl font-bold text-slate-900 sm:text-3xl">
                         Editar departamento #{departmentId}
                     </h2>
 
@@ -125,7 +125,7 @@ export function DepartmentEditPage() {
             </div>
 
             <form onSubmit={handleSubmit}>
-                <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
                     <h3 className="text-lg font-semibold text-slate-900">
                         Información básica
                     </h3>
@@ -261,7 +261,7 @@ export function DepartmentEditPage() {
                     </div>
                 )}
 
-                <div className="mt-6 flex justify-end gap-3">
+                <div className="mt-6 grid grid-cols-2 gap-3 sm:flex sm:justify-end">
                     <Link
                         to={`/departamentos/${departmentId}`}
                         className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
