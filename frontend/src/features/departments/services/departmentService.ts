@@ -1,5 +1,11 @@
 import {apiRequest} from '../../../api/httpClient'
-import type {DepartmentDetail, DepartmentFilters, DepartmentListItem, PageResponse} from '../types/department'
+import type {
+    DepartmentDetail,
+    DepartmentFilters,
+    DepartmentListItem,
+    DepartmentUpdateRequest,
+    PageResponse
+} from '../types/department'
 
 type GetDepartmentsParams = {
     filters: DepartmentFilters
@@ -40,4 +46,14 @@ export async function getDepartments({filters, page, size}: GetDepartmentsParams
 
 export async function getDepartmentById(id: number): Promise<DepartmentDetail> {
     return apiRequest<DepartmentDetail>(`/api/departamentos/${id}`)
+}
+
+export async function updateDepartment(id: number, data: DepartmentUpdateRequest): Promise<DepartmentDetail>{
+    return apiRequest<DepartmentDetail>(`/api/departamentos/${id}`,{
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
 }

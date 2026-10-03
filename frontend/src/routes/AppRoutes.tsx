@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import {DepartmentsListPage} from "../features/departments/pages/DepartmentListPage.tsx";
 import {DepartmentCreatePage} from "../features/departments/pages/DepartmentCreatePage.tsx";
 import {DepartmentDetailPage} from "../features/departments/pages/DepartmentDetailPage.tsx";
-import {DepartmentsEditPage} from "../features/departments/pages/DepartmentEditPage.tsx";
+import {DepartmentEditPage} from "../features/departments/pages/DepartmentEditPage.tsx";
 import {AppLayout} from "../features/departments/components/layout/AppLayout.tsx";
 
 export function AppRoutes() {
@@ -31,7 +31,7 @@ export function AppRoutes() {
 
             <Route
                 path="/departamentos/:id/editar"
-                element={<DepartmentsEditPage />}
+                element={<DepartmentEditPage />}
             />
             </Route>
         </Routes>

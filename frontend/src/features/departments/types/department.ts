@@ -60,3 +60,16 @@ export interface DepartmentDetail {
     imagenes: DepartmentImage[]
     consultas: DepartmentInquiry[]
 }
+
+export interface DepartmentUpdateRequest {
+    titulo: string
+    descripcion: string
+    precio: number
+    moneda: CurrencyCode
+    metrosCuadrados: number
+    direccion: string
+    latitud: number | null
+    longitud: number | null
+    disponible: boolean
+    version: number
+}
