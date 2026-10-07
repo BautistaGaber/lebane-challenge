@@ -1,6 +1,6 @@
-# Lebane Full Stack Challenge
+# Gestion de departamentos
 
-Challenge técnico Full Stack desarrollado con **Java 21, Spring Boot 3, React y TypeScript**.
+Gestion de departamentos desarrollado con **Java 21, Spring Boot 3, React y TypeScript**.
 
 El proyecto implementa un panel de administración para una inmobiliaria, permitiendo listar, filtrar, crear, visualizar y editar departamentos.
 
@@ -1834,8 +1834,6 @@ Las credenciales S3 permanecen del lado del backend.
 
 El frontend no recibe credenciales de LocalStack/S3.
 
-El challenge no implementa autenticación ni autorización porque no forman parte del alcance funcional.
-
 En un entorno productivo, un panel de administración debería incorporar autenticación y control de roles.
 
 ---
@@ -1875,8 +1873,6 @@ testing
 mantenibilidad
 ```
 
-Algunas decisiones se simplificaron intencionalmente para el alcance del challenge.
-
 ## LocalStack en lugar de AWS
 
 Permite ejecutar todo localmente sin credenciales reales.
@@ -1907,9 +1903,6 @@ Las consultas forman parte del dominio y se muestran en detalle.
 
 La creación pública de consultas no forma parte del panel administrativo actual.
 
-## Autenticación
-
-No se implementó por estar fuera del alcance funcional del challenge.
 
 ---
 
@@ -2074,8 +2067,6 @@ http://localhost:8080/api/departamentos
 ---
 
 # Notas finales
-
-El objetivo de esta implementación no fue únicamente cumplir los requisitos funcionales del challenge, sino desarrollar una aplicación pequeña con criterios cercanos a producción.
 
 Las principales prioridades fueron:
 
